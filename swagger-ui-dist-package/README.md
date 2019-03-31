@@ -1,22 +1,39 @@
-# Swagger UI Dist
-[![NPM version](https://badge.fury.io/js/swagger-ui-dist.svg)](http://badge.fury.io/js/swagger-ui-dist)
 
-# API
+![](./brief-swagger-ui.gif)
 
-This module, `swagger-ui-dist`, exposes Swagger-UI's entire dist folder as a dependency-free npm module.
-Use `swagger-ui` instead, if you'd like to have npm install dependencies for you.
+## Use markdown table to render request/response params
+![](./brief-swagger-ui-markdown.png)
 
-`SwaggerUIBundle` and `SwaggerUIStandalonePreset` can be imported:
-```javascript
-  import { SwaggerUIBundle, SwaggerUIStandalonePreset } from "swagger-ui-dist"
+## Usage
+work with `swagger-ui-express`:
+```js
+import express from 'express';
+import yaml from 'js-yaml';
+import swaggerUiExpress from 'swagger-ui-express';
+import swaggerUiDist from 'brief-swagger-ui-dist';
+
+/**
+ *
+ * @param {import('core/api/server').Server} server
+ * @param {import('express').Router} router
+ */
+export async function buildSwaggerUi(server, router) {
+  const swaggerJson = {...};
+
+  // @ts-ignore
+  // eslint-disable-next-line prefer-const
+  let [swaggerInitJsRouter, swaggerUIStaticFileRouter] = swaggerUiExpress.serve;
+  swaggerUIStaticFileRouter = express.static(swaggerUiDist.getAbsoluteFSPath(), { index: false });
+
+  const indexHtmlRouter = swaggerUiExpress.setup(swaggerJson, {
+    explorer: true,
+    swaggerOptions: {
+      filter: true,
+      withCredentials: true,
+    },
+  });
+
+  router.use(swaggerInitJsRouter, swaggerUIStaticFileRouter, indexHtmlRouter);
+}
+
 ```
-
-To get an absolute path to this directory for static file serving, use the exported `getAbsoluteFSPath` method:
-
-```javascript
-const swaggerUiAssetPath = require("swagger-ui-dist").getAbsoluteFSPath()
-
-// then instantiate server that serves files from the swaggerUiAssetPath
-```
-
-For anything else, check the [Swagger-UI](https://github.com/swagger-api/swagger-ui) repository.

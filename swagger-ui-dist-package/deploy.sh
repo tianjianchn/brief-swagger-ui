@@ -20,4 +20,4 @@ else
   npm pack .
 fi
 
-find . -not -name .npmignore -not -name .npmrc -not -name deploy.sh -not -name index.js -not -name package.json -not -name README.md -not -name *.tgz -not -name absolute-path.js -delete
+find . -not -name .npmignore -not -name .npmrc -not -name deploy.sh -not -name index.js -not -name package.json -not -name README.md -not -name "*.tgz" -not -name absolute-path.js -not -name brief-swagger-ui-markdown.png -not -name brief-swagger-ui.gif -delete
