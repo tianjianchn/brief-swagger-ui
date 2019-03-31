@@ -3,6 +3,7 @@ import { fromJS, Iterable } from "immutable"
 import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { defaultStatusCode, getAcceptControllingResponse } from "core/utils"
+import { jsonSchemaToMarkdownTable } from "core/json-schema-to-markdown-table"
 
 export default class Responses extends React.Component {
   static propTypes = {
@@ -70,6 +71,8 @@ export default class Responses extends React.Component {
     const ContentType = getComponent( "contentType" )
     const LiveResponse = getComponent( "liveResponse" )
     const Response = getComponent( "response" )
+    const Markdown = getComponent("Markdown")
+
 
     let produces = this.props.produces && this.props.produces.size ? this.props.produces : Responses.defaultProps.produces
 
@@ -78,19 +81,27 @@ export default class Responses extends React.Component {
     const acceptControllingResponse = isSpecOAS3 ?
       getAcceptControllingResponse(responses) : null
 
+    // eslint-disable-next-line no-debugger
+    // debugger
+    const mediaType = responses.entrySeq().get(0)[1].getIn(["content", producesValue])
+    const responseBodySchema = JSON.parse(JSON.stringify(mediaType.get("schema")))
+    const responseBodySchemaMarkdown = jsonSchemaToMarkdownTable(responseBodySchema)
+    
     return (
       <div className="responses-wrapper">
         <div className="opblock-section-header">
-          <h4>Responses</h4>
-            { specSelectors.isOAS3() ? null : <label>
-              <span>Response content type</span>
-              <ContentType value={producesValue}
+          <h4 className={`opblock-title parameter__name`}>Response body</h4>
+          <label>
+            <ContentType value={producesValue}
                          onChange={this.onChangeProducesWrapper}
                          contentTypes={produces}
                          className="execute-content-type"/>
-                     </label> }
+          </label>
         </div>
-        <div className="responses-inner">
+        <div className="opblock-description-wrapper">
+          <Markdown source={responseBodySchemaMarkdown} />
+        </div>
+        {/* <div className="responses-inner">
           {
             !tryItOutResponse ? null
                               : <div>
@@ -138,7 +149,7 @@ export default class Responses extends React.Component {
               }
             </tbody>
           </table>
-        </div>
+        </div> */}
       </div>
     )
   }

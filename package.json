@@ -1,6 +1,6 @@
 {
-  "name": "swagger-ui",
-  "version": "3.22.0",
+  "name": "brief-swagger-ui",
+  "version": "0.1.2",
   "main": "dist/swagger-ui.js",
   "repository": "git@github.com:swagger-api/swagger-ui.git",
   "contributors": [
@@ -10,7 +10,8 @@
     "Josh Ponelat <jponelat@gmail.com>",
     "Kyle Shockey <kyleshockey@gmail.com>",
     "Robert Barnwell <robert@robertismy.name>",
-    "Sahar Jafari <shr.jafari@gmail.com>"
+    "Sahar Jafari <shr.jafari@gmail.com>",
+    "Tian Jian <tianjianchn@qq.com>"
   ],
   "license": "Apache-2.0",
   "scripts": {

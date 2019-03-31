@@ -112,7 +112,7 @@ class Parameters extends Component {
 
     return (
       <div className="opblock-section">
-        <div className="opblock-section-header">
+        {/* <div className="opblock-section-header">
           <div className="tab-header">
             <div onClick={() => this.toggleTab("parameters")} className={`tab-item ${this.state.parametersVisible && "active"}`}>
               <h4 className="opblock-title"><span>Parameters</span></h4>
@@ -168,7 +168,7 @@ class Parameters extends Component {
             callbacks={Map(operation.get("callbacks"))}
             specPath={specPath.slice(0, -1).push("callbacks")}
           />
-        </div> : "" }
+        </div> : "" } */}
         {
           isOAS3() && requestBody && this.state.parametersVisible &&
           <div className="opblock-section opblock-section-request-body">

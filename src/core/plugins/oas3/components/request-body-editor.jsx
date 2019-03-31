@@ -26,7 +26,7 @@ export default class RequestBodyEditor extends PureComponent {
     super(props, context)
 
     this.state = {
-      isEditBox: false,
+      isEditBox: true,
       userDidModify: false,
       value: ""
     }
@@ -113,7 +113,7 @@ export default class RequestBodyEditor extends PureComponent {
             : (value && <HighlightCode className="body-param__example"
                                value={ value }/>)
         }
-        <div className="body-param-options">
+        {/* <div className="body-param-options">
           <div className="body-param-edit">
             {
               !isExecute ? null
@@ -126,7 +126,7 @@ export default class RequestBodyEditor extends PureComponent {
               <Button className="btn ml3" onClick={() => { this.resetValueToSample(mediaType) }}>Reset</Button>
             }
           </div>
-        </div>
+        </div> */}
 
       </div>
     )

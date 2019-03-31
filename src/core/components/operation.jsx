@@ -87,6 +87,7 @@ export default class Operation extends PureComponent {
     let operationScheme = specSelectors.operationScheme(path, method)
     let isShownKey = ["operations", tag, operationId]
     let extensions = getExtensions(operation)
+    const requestBody = operation.get("requestBody")
 
     const Responses = getComponent("responses")
     const Parameters = getComponent( "parameters" )
@@ -99,6 +100,9 @@ export default class Operation extends PureComponent {
     const OperationExt = getComponent( "OperationExt" )
     const OperationSummary = getComponent( "OperationSummary" )
     const Link = getComponent( "Link" )
+    const TryItOutButton = getComponent("TryItOutButton")
+    const RequestBodyEditor = getComponent("RequestBodyEditor")
+    const LiveResponse = getComponent( "liveResponse" )
 
     const { showExtensions } = getConfigs()
 
@@ -109,6 +113,7 @@ export default class Operation extends PureComponent {
     }
 
     let onChangeKey = [ path, method ] // Used to add values to _this_ operation ( indexed by path and method )
+    const tryItOutResponse = response
 
     return (
         <div className={deprecated ? "opblock opblock-deprecated" : isShown ? `opblock opblock-${method} is-open` : `opblock opblock-${method}`} id={escapeDeepLinkPath(isShownKey.join("-"))} >
@@ -159,7 +164,7 @@ export default class Operation extends PureComponent {
                 />
               }
 
-              { !tryItOutEnabled ? null :
+              {/* { !tryItOutEnabled ? null :
                 <OperationServers
                   getComponent={getComponent}
                   path={path}
@@ -172,18 +177,18 @@ export default class Operation extends PureComponent {
                   getServerVariable={oas3Selectors.serverVariableValue}
                   getEffectiveServerValue={oas3Selectors.serverEffectiveValue}
                 />
-              }
+              } */}
 
-              {!tryItOutEnabled || !allowTryItOut ? null : schemes && schemes.size ? <div className="opblock-schemes">
+              {/* {!tryItOutEnabled || !allowTryItOut ? null : schemes && schemes.size ? <div className="opblock-schemes">
                     <Schemes schemes={ schemes }
                              path={ path }
                              method={ method }
                              specActions={ specActions }
                              currentScheme={ operationScheme } />
                   </div> : null
-              }
+              } */}
 
-            <div className={(!tryItOutEnabled || !response || !allowTryItOut) ? "execute-wrapper" : "btn-group"}>
+            {/* <div className={(!tryItOutEnabled || !response || !allowTryItOut) ? "execute-wrapper" : "btn-group"}>
               { !tryItOutEnabled || !allowTryItOut ? null :
 
                   <Execute
@@ -201,9 +206,8 @@ export default class Operation extends PureComponent {
                     path={ path }
                     method={ method }/>
               }
-            </div>
+            </div> */}
 
-            {executeInProgress ? <div className="loading-container"><div className="loading"></div></div> : null}
 
               { !responses ? null :
                   <Responses
@@ -224,9 +228,60 @@ export default class Operation extends PureComponent {
                     fn={fn} />
               }
 
-              { !showExtensions || !extensions.size ? null :
+              {/* { !showExtensions || !extensions.size ? null :
                 <OperationExt extensions={ extensions } getComponent={ getComponent } />
+              } */}
+
+              <div className="opblock-section-header">
+                { allowTryItOut ? (
+                  <TryItOutButton enabled={ tryItOutEnabled } onCancelClick={ onCancelClick } onTryoutClick={ onTryoutClick } />
+                ) : null }
+                <div style={{padding: "0 16px"}} />
+              </div>
+
+              { !tryItOutEnabled ? null:
+                <RequestBodyEditor
+                  requestBody={requestBody}
+                  // onChange={onChange}
+                  mediaType="application/json"
+                  getComponent={getComponent}
+                  isExecute
+                  specSelectors={specSelectors}
+                  />
               }
+              <div className="opblock-section-header">
+                { !tryItOutEnabled || !allowTryItOut ? null :
+                  <Execute
+                    operation={ operation }
+                    specActions={ specActions }
+                    specSelectors={ specSelectors }
+                    path={ path }
+                    method={ method }
+                    onExecute={ onExecute } />
+                  }
+                <div style={{padding: "0 16px"}} />
+                { (!tryItOutEnabled || !response || !allowTryItOut) ? null :
+                  <Clear
+                    specActions={ specActions }
+                    path={ path }
+                    method={ method }/>
+                  }
+              </div>
+              
+              {executeInProgress ? <div className="loading-container"><div className="loading"></div></div> : null}
+
+              { !tryItOutEnabled || !tryItOutResponse ? null:               
+                <div style={{padding: "0 20px"}}>
+                  <LiveResponse response={ tryItOutResponse }
+                                getComponent={ getComponent }
+                                getConfigs={ getConfigs }
+                                specSelectors={ specSelectors }
+                                path={ path }
+                                method={ method }
+                                displayRequestDuration={ displayRequestDuration } />
+                </div>
+              }
+              
             </div>
           </Collapse>
         </div>

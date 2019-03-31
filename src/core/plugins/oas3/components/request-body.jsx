@@ -3,6 +3,7 @@ import PropTypes from "prop-types"
 import ImPropTypes from "react-immutable-proptypes"
 import { Map, OrderedMap, List } from "immutable"
 import { getCommonExtensions, getSampleSchema, stringify } from "core/utils"
+import { jsonSchemaToMarkdownTable } from "core/json-schema-to-markdown-table"
 
 const RequestBody = ({
   requestBody,
@@ -32,6 +33,9 @@ const RequestBody = ({
 
   const mediaTypeValue = requestBodyContent.get(contentType, OrderedMap())
   const schemaForMediaType = mediaTypeValue.get("schema", OrderedMap())
+
+  const requestBodySchema = JSON.parse(JSON.stringify(mediaTypeValue.get("schema")))
+  const requestBodySchemaMarkdown = jsonSchemaToMarkdownTable(requestBodySchema)
 
   if(!mediaTypeValue.size) {
     return null
@@ -139,7 +143,8 @@ const RequestBody = ({
     { requestBodyDescription &&
       <Markdown source={requestBodyDescription} />
     }
-    <ModelExample
+    <Markdown source={requestBodySchemaMarkdown} />
+    {/* <ModelExample
       getComponent={ getComponent }
       getConfigs={ getConfigs }
       specSelectors={ specSelectors }
@@ -155,7 +160,7 @@ const RequestBody = ({
         isExecute={isExecute}
         specSelectors={specSelectors}
         />}
-      />
+      /> */}
   </div>
 }
 
