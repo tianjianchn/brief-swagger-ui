@@ -3,7 +3,7 @@ const columns = [
   { key: "name", title: "Param" },
   { key: "type", title: "Type" },
   { key: "format", title: "Format" },
-  { key: "title", title: "title" },
+  { key: "nullable", title: "Nullable" },
   { key: "constraints", title: "Constraints" },
   { key: "description", title: "Description" }, 
 ]
@@ -11,7 +11,7 @@ const columns = [
 export function jsonSchemaToMarkdownTable(schema) {
   const rows = jsonSchemaToMarkdownRows(null, -1, schema)
   rows.forEach((row) => {
-    row.name = new Array(row.level * 4).fill(0).map(() => "&nbsp;").join("") + row.name
+    row.name = new Array(row.level * 3).fill(0).map(() => "&nbsp;").join("") + row.name
   })
 
   const title = columns.map(c => c.title).join("|")
@@ -28,12 +28,24 @@ function jsonSchemaToMarkdownRows(name, level = 0, schema) {
   } = schema
 
   const row = {
-    name, type, title, description, constraints: [], default: defaultValue, nullable, level,
+    name, type, description, constraints: [], nullable: nullable?"Y":"N", level,
   }
+
+  if(title){
+    row.description = title + " " + (row.description || "") 
+  }
+  if(examples){
+    row.description = (row.description || "") + " Examples: "+examples
+  }
+
+
   if (name) {
     rows.push(row)
   }
 
+  if(defaultValue!==undefined){
+    row.constraints.push(`default=`+defaultValue)
+  }
   if (enums) {
     row.constraints.push(`enums=${enums.map(v => JSON.stringify(v)).join(",")}`)
   }
@@ -55,10 +67,10 @@ function jsonSchemaToMarkdownRows(name, level = 0, schema) {
   } else if (type === "array") {
     const { items, additionItems } = schema
     if (additionItems === false) row.constraints.push(`additionItems=${additionItems}`)
-    row.type = `${row.type}\\<${items.type}>`
+    row.type = `${row.type}<${items.type}>`
 
     if (items.type === "object") {
-      const subRows = jsonSchemaToMarkdownRows("-", level + 1, items)
+      const subRows = jsonSchemaToMarkdownRows("<item>", level + 1, items)
       rows = rows.concat(subRows)
     // const { properties } = items;
     //   if (properties) {
@@ -83,5 +95,14 @@ function jsonSchemaToMarkdownRows(name, level = 0, schema) {
   // @ts-ignore
   row.constraints = row.constraints.join(", ")
 
+  Object.keys(row).forEach(key=>{
+    row[key] = escape(row[key])
+  })
+
   return rows
+}
+
+function escape(str){
+  if(!str || typeof str !== "string") return str
+  return str.replace(/(<|>)/g, "\\$1")
 }

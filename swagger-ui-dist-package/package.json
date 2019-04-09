@@ -1,6 +1,6 @@
 {
   "name": "brief-swagger-ui-dist",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "main": "index.js",
   "repository": "git@github.com:tianjianchn/swagger-ui.git",
   "contributors": [

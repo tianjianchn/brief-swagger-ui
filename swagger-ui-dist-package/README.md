@@ -37,3 +37,17 @@ export async function buildSwaggerUi(server, router) {
 }
 
 ```
+
+## Contributing
+```bash
+# development
+npm run dev
+open http://127.0.0.1:3200/
+# using oas3(Swagger V3) swagger.json or swagger.yml
+
+# publish
+npm run build
+# edit package.json version
+cd swagger-ui-dist-package
+./deploy.sh
+```

@@ -1,7 +1,12 @@
 # Deploy `swagger-ui-dist` to npm.
 
 # Parameter Expansion: http://stackoverflow.com/questions/6393551/what-is-the-meaning-of-0-in-a-bash-script
-cd "${0%/*}"
+# cd "${0%/*}"
+
+if [ "${PWD##*/}" != "swagger-ui-dist-package" ]; then
+  echo "must be run under swagger-ui-dist-package dir"
+  exit 1
+fi
 
 # Get UI version
 UI_VERSION=$(node -p "require('../package.json').version")
